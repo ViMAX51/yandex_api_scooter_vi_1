@@ -1,29 +1,25 @@
 import configuration
 import data
 import requests
-import json
+import sender_stand_request
+
 
 # Виталий Максимов, 15-я когорта — Финальный проект. Инженер по тестированию плюс
-def create_new_order(body):
-    return requests.post(configuration.URL_SERVICE + configuration.CREATE_ORDERS,
-                         json=data.body)
 
-
-def take_t_new_order():
-    track = create_new_order(data.body).json()
+# ф-я получения трек номер из созданного заказа
+def getting_the_track_number_of_the_order_from_the_order():
+    track = sender_stand_request.creating_a_new_order(data.body).json()
     t = track['track']
     return t
 
 
-def take_order_on_number(t):
-    return requests.get(configuration.URL_SERVICE + configuration.TAKE_ORDERS + '?t=' + str(t))
-
-
+# ф-я для проверки, что по треку заказа можно получить данные о заказе
 def positive_assert():
-    t = take_t_new_order()
-    order_response = take_order_on_number(t)
+    t = getting_the_track_number_of_the_order_from_the_order()
+    order_response = sender_stand_request.receiving_an_order_by_the_order_track(t)
     assert order_response.status_code == 200
 
 
-def test_code_200():
+# ф-я запуска автотеста проверки, что по треку заказа можно получить данные о заказе
+def test_the_response_code_200_sending_request_order_information_by_order_number():
     positive_assert()
